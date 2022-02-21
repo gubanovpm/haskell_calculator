@@ -12,6 +12,7 @@ data Lexem = ADD
            | LBR
            | RBR
            | NUM Int
+           | ERR            -- syntax error
            deriving (Eq, Show)
 
 -- специальная функция вывода списка лексем
@@ -47,18 +48,25 @@ char2int char | (char == '0') =  0
               | (char == '9') =  9
               | otherwise     = -1
 
+isSpaces :: Char -> Bool 
+isSpaces literal | (literal == ' ' ) = True
+                 | (literal == '\t') = True
+                 | otherwise         = False
+
 -- lexer - разбиение строки на лексемы
 lexer :: [Char] -> [Lexem]
 lexer "" = []
-lexer (x:xs) | (x == '+') = [ADD] ++ (lexer xs)
-             | (x == '-') = [SUB] ++ (lexer xs)
-             | (x == '*') = [MUL] ++ (lexer xs)
-             | (x == '/') = [DIV] ++ (lexer xs)
-             | (x == '(') = [LBR] ++ (lexer xs)
-             | (x == ')') = [RBR] ++ (lexer xs)
+lexer (x:xs) | (isSpaces x) = lexer xs
+             | (x == '+')   = [ADD] ++ (lexer xs)
+             | (x == '-')   = [SUB] ++ (lexer xs)
+             | (x == '*')   = [MUL] ++ (lexer xs)
+             | (x == '/')   = [DIV] ++ (lexer xs)
+             | (x == '(')   = [LBR] ++ (lexer xs)
+             | (x == ')')   = [RBR] ++ (lexer xs)
              | (isFigure x) = [NUM ((lexer_num xs) (char2int x))] ++ (lexer (lexer_skip xs))
-             | otherwise = (lexer xs)
+             | otherwise    = [ERR]
 
+-- lexer_skip - проход по массиву пока не встретится не цифра
 lexer_skip :: [Char] -> [Char]
 lexer_skip [] = []
 lexer_skip (x:xs) | (isFigure x) = lexer_skip xs
