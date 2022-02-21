@@ -17,7 +17,7 @@ sudo pacman -S ghc
 ```
 ### After compile just run it and write your expression (as an example):
 ```
-./compile.out
+./calculate.out
 (1 + 3) * 4 - 1 - 1 - 1
 ```
 ### Supported operations: (), +, -, *, /
