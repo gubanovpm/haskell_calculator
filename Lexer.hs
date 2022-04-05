@@ -29,7 +29,7 @@ consume :: String -> LexerState -> [(LexerState, Char)] -> [Token] -> Maybe [Tok
 consume (x:xs) Start history tokens
   | isDigit x    = consume xs Digits ((Start, x) : history) tokens
   | isOperator x = consume xs Operators ((Start, x) : history) tokens
-  | isBrackets x   = consume xs Brackets ((Brackets, x) : history) tokens
+  | isBrackets x = consume xs Brackets ((Brackets, x) : history) tokens
   | isSpace x    = consume xs Start history tokens
   | otherwise    = Nothing
 
@@ -59,14 +59,14 @@ consume input@(x:xs) Operators history tokens
   | otherwise = consume input Start [] (tokens ++ [Operator operator])
   where operator = (head . historyAsStr) history
 
-consume [] Brackets history tokens = consume [] Start [] (tokens ++ [BracketsToken])
-  where Brackets      = (head . historyAsStr) history
-        BracketsToken = case Brackets of
+consume [] Brackets history tokens = consume [] Start [] (tokens ++ [bracketsToken])
+  where brackets      = (head . historyAsStr) history
+        bracketsToken = case brackets of
             '(' -> OpenBrackets
             ')' -> CloseBrackets
-consume input Brackets history tokens = consume input Start [] (tokens ++ [BracketsToken])
-  where Brackets      = (head . historyAsStr) history
-        BracketsToken = case Brackets of
+consume input Brackets history tokens = consume input Start [] (tokens ++ [bracketsToken])
+  where brackets      = (head . historyAsStr) history
+        bracketsToken = case brackets of
             '(' -> OpenBrackets
             ')' -> CloseBrackets
 
