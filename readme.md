@@ -3,7 +3,7 @@
 ## Teacher: Krasnov Mikhail Mikhailovich
 ### To compile it use:
 ``` 
-ghc -dynamic calc.hs -o calculate.out
+ghc Main.hs Parser.hs Token.hs Evaluator.hs Ast.hs Lexer.hs -o calc.out -dynamic
 ```
 ### If you haven't ghc-comiler, then you can install it from official site for Windows
 ### Or if you use Linux-based system just install it
@@ -17,7 +17,7 @@ sudo pacman -S ghc
 ```
 ### After compile just run it and write your expression (as an example):
 ```
-./calculate.out
+./calc.out
 (1 + 3) * 4 - 1 - 1 - 1
 ```
 ### Supported operations: (), +, -, *, /

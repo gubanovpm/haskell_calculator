@@ -16,7 +16,6 @@ main :: IO ()
 main = do
   expression <- getLine
   maybeTokens <- return (lexicallyAnalyse expression)
-  print maybeTokens
   case maybeTokens of
     (Just tokens) -> do
         maybeExp <- return (parse tokens)
