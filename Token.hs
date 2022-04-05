@@ -5,6 +5,6 @@ module Tokens
 where
 data Token =  Operator Char |
               Number Double |
-              OpenParens    |
-              CloseParens
+              OpenBrackets  |
+              CloseBrackets
               deriving (Show, Eq)

@@ -25,7 +25,7 @@ parseExp [] = (Just TrivialExp,[])
 parseExp tokens@(lookahead : rest)
   | (Operator op)       <- lookahead  = parse' op
   | (Tokens.Number num) <- lookahead  = parse' 'n'
-  | OpenParens          <- lookahead  = parse' '('
+  | OpenBrackets          <- lookahead  = parse' '('
   | otherwise                         = (Nothing, tokens)
   where parse' look | look == '+' = (liftIntoExp term exp', resultRest)
                     | look == '-' = (liftIntoExp term exp', resultRest)
@@ -48,7 +48,7 @@ parseTerm [] = (Nothing, [])
 parseTerm tokens@(lookahead : rest)
   | (Operator op)       <- lookahead  = parse' op
   | (Tokens.Number num) <- lookahead  = parse' 'n'
-  | OpenParens          <- lookahead  = parse' '('
+  | OpenBrackets          <- lookahead  = parse' '('
   | otherwise                         = (Nothing, tokens)
   where parse' look | look == '-' = (liftIntoTerm factor term', resultRest)
                     | look == 'n' = (liftIntoTerm factor term', resultRest)
@@ -69,7 +69,7 @@ parseExp' :: [Token] -> (Maybe Exp', [Token])
 parseExp' [] = (Just TrivialExp', [])
 parseExp' tokens@(lookahead : rest)
   | (Operator op) <- lookahead  = parse' op
-  | CloseParens   <- lookahead  = (Just TrivialExp', tokens)
+  | CloseBrackets   <- lookahead  = (Just TrivialExp', tokens)
   | otherwise                   = (Nothing, tokens)
   where parse' look | look == '+' = (liftIntoExp' Add term exp', resultRest)
                     | look == '-' = (liftIntoExp' Sub term exp', resultRest)
@@ -90,7 +90,7 @@ parseTerm' :: [Token] -> (Maybe Term', [Token])
 parseTerm' [] = (Just TrivalTerm', [])
 parseTerm' tokens@(lookahead : rest)
   | (Operator op) <- lookahead = parse' op
-  | CloseParens   <- lookahead = (Just TrivalTerm', tokens)
+  | CloseBrackets   <- lookahead = (Just TrivalTerm', tokens)
   | otherwise                  = (Nothing, tokens)
   where parse' look | look == '+' = (Just TrivalTerm', tokens)
                     | look == '-' = (Just TrivalTerm', tokens)
@@ -114,7 +114,7 @@ parseFactor [] = (Nothing, [])
 parseFactor tokens@(lookahead : rest)
   | (Operator op)       <- lookahead  = parse' op
   | (Tokens.Number num) <- lookahead  = parse' 'n'
-  | OpenParens          <- lookahead  = parse' '('
+  | OpenBrackets          <- lookahead  = parse' '('
   | otherwise                         = (Nothing, tokens)
   where parse' look | look == '-' = (liftIntoNegativeFactor factor, factorRest)
                     | look == 'n' = (liftIntoAtomicFactor atom, atomRest)
@@ -135,7 +135,7 @@ parseAtom :: [Token] -> (Maybe Atom, [Token])
 parseAtom [] = (Nothing, [])
 parseAtom tokens@(lookahead : rest)
   | (Tokens.Number value) <- lookahead = parse' 'n'
-  | OpenParens            <- lookahead = parse' '('
+  | OpenBrackets          <- lookahead = parse' '('
   | otherwise                          = (Nothing, tokens)
   where parse' look | look == 'n'                  = (liftIntoNumericAtom value, rest)
                     | look == '(' && expRest /= [] = (liftIntoExpAtom exp, tail expRest)

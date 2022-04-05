@@ -12,15 +12,15 @@ data LexerState = Start          |
                   Digits         |
                   DigitsAfterDot |
                   Operators      |
-                  Parens         |
+                  Brackets       |
                   Error
                   deriving (Show)
 
 isOperator :: Char -> Bool
 isOperator x = x `elem` ['+','-','*','/']
 
-isParens :: Char -> Bool
-isParens x = x `elem` ['(',')']
+isBrackets :: Char -> Bool
+isBrackets x = x `elem` ['(',')']
 
 lexicallyAnalyse :: String -> Maybe [Token]
 lexicallyAnalyse input = consume input Start [] []
@@ -29,7 +29,7 @@ consume :: String -> LexerState -> [(LexerState, Char)] -> [Token] -> Maybe [Tok
 consume (x:xs) Start history tokens
   | isDigit x    = consume xs Digits ((Start, x) : history) tokens
   | isOperator x = consume xs Operators ((Start, x) : history) tokens
-  | isParens x   = consume xs Parens ((Parens, x) : history) tokens
+  | isBrackets x   = consume xs Brackets ((Brackets, x) : history) tokens
   | isSpace x    = consume xs Start history tokens
   | otherwise    = Nothing
 
@@ -59,16 +59,16 @@ consume input@(x:xs) Operators history tokens
   | otherwise = consume input Start [] (tokens ++ [Operator operator])
   where operator = (head . historyAsStr) history
 
-consume [] Parens history tokens = consume [] Start [] (tokens ++ [parensToken])
-  where parens      = (head . historyAsStr) history
-        parensToken = case parens of
-            '(' -> OpenParens
-            ')' -> CloseParens
-consume input Parens history tokens = consume input Start [] (tokens ++ [parensToken])
-  where parens      = (head . historyAsStr) history
-        parensToken = case parens of
-            '(' -> OpenParens
-            ')' -> CloseParens
+consume [] Brackets history tokens = consume [] Start [] (tokens ++ [BracketsToken])
+  where Brackets      = (head . historyAsStr) history
+        BracketsToken = case Brackets of
+            '(' -> OpenBrackets
+            ')' -> CloseBrackets
+consume input Brackets history tokens = consume input Start [] (tokens ++ [BracketsToken])
+  where Brackets      = (head . historyAsStr) history
+        BracketsToken = case Brackets of
+            '(' -> OpenBrackets
+            ')' -> CloseBrackets
 
 consume [] state history tokens = Just tokens
 consume _ _ _ _                 = Nothing
